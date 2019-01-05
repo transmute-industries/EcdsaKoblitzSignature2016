@@ -4,7 +4,7 @@
 
 A minimal implementation of EcdsaKoblitzSignature2016 in javascript.
 
-Mostly to provide clarity around how complex linked data signature suites are, in the hope that future suites will be simpler.
+Mostly to provide clarity around how complex linked data signature suites are, in the hope that future suites will be simpler, and less coupled to crypto currency libraries.
 
 #### Example
 
