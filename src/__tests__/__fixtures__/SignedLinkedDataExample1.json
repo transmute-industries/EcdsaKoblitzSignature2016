@@ -1,0 +1,10 @@
+{
+  "@context": "https://w3id.org/identity/v1",
+  "givenName": "Alice",
+  "signature": {
+    "type": "sec:EcdsaKoblitzSignature2016",
+    "created": "2019-01-05T02:41:07Z",
+    "creator": "ecdsa-koblitz-pubkey:1LGpGhGK8whX23ZNdxrgtjKrek9rP4xWER",
+    "signatureValue": "Hxf15psaaHq4S43I2KVq6NZflXbC6lHXMNJmcKo8MYszLxjoPCnlPqcwmIqBgWUUesO7wpq9nSNKH1kT4F720w0="
+  }
+}
