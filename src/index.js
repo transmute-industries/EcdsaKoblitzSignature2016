@@ -10,17 +10,9 @@ const canonize = async data => {
   });
 };
 
-const createVerifyData = async ({
-  document,
-  proof
-  // documentLoader,
-  // expansionMap
-}) => {
-  // console.log("my createVerifyData proof", proof)
-  const c14n = await canonize(document, {
-    // documentLoader,
-    // expansionMap
-  });
+// See https://github.com/digitalbazaar/jsonld-signatures/blob/master/lib/suites/LinkedDataSignature2015.js#L90
+const createVerifyData = async ({ document, proof }) => {
+  const c14n = await canonize(document);
 
   let verifyData = "";
   const headers = {
@@ -67,7 +59,6 @@ const sign = async ({
   domain,
   created
 }) => {
-  
   const proof = {
     "@context": "https://w3id.org/security/v2",
     type: "EcdsaKoblitzSignature2016",
