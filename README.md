@@ -1,6 +1,6 @@
 # EcdsaKoblitzSignature2016
 
-[![Build Status](https://travis-ci.org/transmute-industries/EcdsaKoblitzSignature2016.svg?branch=master)](https://travis-ci.org/transmute-industries/EcdsaKoblitzSignature2016)
+[![Build Status](https://travis-ci.org/transmute-industries/EcdsaKoblitzSignature2016.svg?branch=master)](https://travis-ci.org/transmute-industries/EcdsaKoblitzSignature2016) [![codecov](https://codecov.io/gh/transmute-industries/EcdsaKoblitzSignature2016/branch/master/graph/badge.svg)](https://codecov.io/gh/transmute-industries/EcdsaKoblitzSignature2016)
 
 A minimal implementation of EcdsaKoblitzSignature2016 in javascript.
 
