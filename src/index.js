@@ -59,12 +59,22 @@ const verify = async ({ data }) => {
   };
 };
 
-const sign = async ({ data, privateKeyWIF, creator }) => {
+const sign = async ({
+  data,
+  privateKeyWIF,
+  creator,
+  nonce,
+  domain,
+  created
+}) => {
+  
   const proof = {
     "@context": "https://w3id.org/security/v2",
     type: "EcdsaKoblitzSignature2016",
-    created: '2019-01-05T18:39:39Z',
-    creator
+    created: created || new Date().toISOString(),
+    creator,
+    nonce,
+    domain
   };
 
   const verifyData = await createVerifyData({
@@ -78,10 +88,8 @@ const sign = async ({ data, privateKeyWIF, creator }) => {
   );
   proof.signatureValue = message.sign(privateKey);
   data.signature = proof;
-  // return data;
-  delete data.signature['@context']
-  data.signature.type = 'sec:EcdsaKoblitzSignature2016'
-  return data
+  delete data.signature["@context"];
+  return data;
 };
 
 module.exports = {
