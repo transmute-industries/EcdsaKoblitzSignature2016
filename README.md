@@ -1,5 +1,7 @@
 # EcdsaKoblitzSignature2016
 
+[![Build Status](https://travis-ci.org/transmute-industries/EcdsaKoblitzSignature2016.svg?branch=master)](https://travis-ci.org/transmute-industries/EcdsaKoblitzSignature2016)
+
 A minimal implementation of EcdsaKoblitzSignature2016 in javascript.
 
 Mostly to provide clarity around how complex linked data signature suites are, in the hope that future suites will be simpler.
