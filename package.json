@@ -1,7 +1,7 @@
 {
-  "name": "ecdsakoblitzsignature2016",
+  "name": "@transmute/ecdsakoblitzsignature2016",
   "version": "0.1.0",
-  "description": "A minimal implementation of EcdsaKoblitzSignature2016 in javascript.",
+  "description": "A minimal implementation of EcdsaKoblitzSignature2016",
   "main": "./src/index.js",
   "scripts": {
     "test": "jest --env node --coverage --testPathIgnorePatterns __fixtures__ -- ",
