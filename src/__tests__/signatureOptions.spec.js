@@ -12,10 +12,10 @@ describe("EcdsaKoblitzSignature2016", () => {
         privateKeyWIF: bitcoinKeypair.privateKey,
         creator: `ecdsa-koblitz-pubkey:${bitcoinKeypair.address}`
       });
-      const result = await verify({
+      const verified = await verify({
         data: signed
       });
-      expect(result.verified).toBe(true);
+      expect(verified).toBe(true);
       expect(signed.signature.nonce).toBe(nonce);
     });
   });
@@ -29,10 +29,10 @@ describe("EcdsaKoblitzSignature2016", () => {
         privateKeyWIF: bitcoinKeypair.privateKey,
         creator: `ecdsa-koblitz-pubkey:${bitcoinKeypair.address}`
       });
-      const result = await verify({
+      const verified = await verify({
         data: signed
       });
-      expect(result.verified).toBe(true);
+      expect(verified).toBe(true);
       expect(signed.signature.domain).toBe(domain);
     });
   });
@@ -46,10 +46,10 @@ describe("EcdsaKoblitzSignature2016", () => {
         privateKeyWIF: bitcoinKeypair.privateKey,
         creator: `ecdsa-koblitz-pubkey:${bitcoinKeypair.address}`
       });
-      const result = await verify({
+      const verified = await verify({
         data: signed
       });
-      expect(result.verified).toBe(true);
+      expect(verified).toBe(true);
       expect(signed.signature.created).toBe(created);
     });
   });

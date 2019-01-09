@@ -1,8 +1,8 @@
 const bip39 = require("bip39");
 const hdkey = require("hdkey");
+const ethUtil = require("ethereumjs-util");
 const bitcore = require("bitcore-lib");
 const bitcoreMessage = require("bitcore-message");
-const ethUtil = require("ethereumjs-util");
 
 const { sign, verify } = require("../index");
 
@@ -68,19 +68,19 @@ describe("EcdsaKoblitzSignature2016", () => {
       ethUtil.sha256(message).toString("hex")
     ).sign(bitcore.PrivateKey.fromWIF(btcIdentity.btcPrivateKey));
 
-    const verified = bitcoreMessage(
+    const verifiedBitcoin = bitcoreMessage(
       ethUtil.sha256(message).toString("hex")
     ).verify(btcIdentity.btcAddress, signedBitcoin);
 
-    expect(verified).toBe(true);
+    expect(verifiedBitcoin).toBe(true);
 
-    let result = await sign({
-      data: { ...linkedData },
+    const signed = await sign({
+      data: linkedData,
       creator: `ecdsa-koblitz-pubkey:${btcIdentity.btcAddress}`,
       privateKeyWIF: btcIdentity.btcPrivateKey
     });
-    expect(result.signature).toBeDefined();
-    result = await verify({ data: result });
-    expect(result.verified).toBe(true);
+    expect(signed.signature).toBeDefined();
+    const verified = await verify({ data: signed });
+    expect(verified).toBe(true);
   });
 });

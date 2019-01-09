@@ -6,7 +6,46 @@ A minimal implementation of EcdsaKoblitzSignature2016 in JavaScript.
 
 Mostly to provide clarity around how complex linked data signature suites are, in the hope that future suites will be simpler, and less coupled to crypto currency libraries.
 
-#### Example
+
+#### Signed with Public Key
+
+As seen on [https://json-ld.org/playground/](https://json-ld.org/playground/)
+
+```
+{
+  "@context": "https://w3id.org/identity/v1",
+  "givenName": "Alice",
+  "signature": {
+    "type": "EcdsaKoblitzSignature2016",
+    "created": "2019-01-09T20:22:03.149Z",
+    "creator": "ecdsa-koblitz-pubkey:02234be9bcdf041f7530979b8b88b7dc62dd505a75883c8211f3a8250534f96dc0",
+    "signatureValue": "IHFt7uxpLBhUC7BG9aiBVBtOmnYljhpCW5TL6I/v+iaRQmmxB9Bf8jBdr17XtDX4qNWq4i8Og8is/TWNEdgvz1Y="
+  }
+}
+```
+
+### Signed by a DID
+
+As seen [here](https://gist.github.com/Exulansis/903ab4a77b4173c2268f7a0ef90521ac)
+
+```
+{
+  "@context": "https://w3id.org/identity/v1",
+  "givenName": "Alice",
+  "signature": {
+    "type": "EcdsaKoblitzSignature2016",
+    "created": "2019-01-09T20:29:25.773Z",
+    "creator": "did:example:123#main-key",
+    "signatureValue": "IG93BohNGlH6R0NWJDtOX36tmVigDwwOglKgWYW0SAcoHkwn8YPS6xOSiRKW2DdJqY3BDNjrUIzSKSMcllo2VmQ="
+  }
+}
+```
+
+#### Signed with Bitcoin Address (livenet assumed)
+
+As seen [here](https://github.com/digitalbazaar/jsonld-signatures/blob/a636acd31bd9fdd0488c9e50a3e1a39500a2ce8a/tests/mock/keys.js#L50)
+
+_IMO best not to use addresses for signature suites_ 
 
 ```
 {

@@ -15,6 +15,15 @@ const bitcoinKeypair = {
   privateKey: "L4mEi7eEdTNNFQEWaa7JhUKAbtHdVvByGAqvpJKC53mfiqunjBjw"
 };
 
+const btcIdentity = {
+  address: "16agVsYKpbHL4H4e6NSm4yDkpRN4w84E2Q",
+  publicKey:
+    "02234be9bcdf041f7530979b8b88b7dc62dd505a75883c8211f3a8250534f96dc0",
+  privateKeyWif: "KzVDttSotdDwhfBBiaU4vPKK3yeUmvfLcWbBPHdWy2k3wNYs2oPE",
+  privateKeyHex:
+    "617e062ea82d0cc631bc6b315b444f2efb55319ea8e0b64f6f8a807ef7588e41"
+};
+
 const jsonldmocks = require("./jsonld-signature-mock");
 
 module.exports = {
@@ -24,5 +33,6 @@ module.exports = {
   signedLinkedData1,
   keypair,
   creator,
+  btcIdentity,
   ...jsonldmocks
 };

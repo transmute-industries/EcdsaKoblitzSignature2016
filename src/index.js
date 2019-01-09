@@ -34,8 +34,19 @@ const createVerifyData = async ({ document, proof }) => {
   return forge.util.binary.raw.decode(buffer.getBytes());
 };
 
-const verify = async ({ data }) => {
-  const publicKeyWif = data.signature.creator.split("ecdsa-koblitz-pubkey:")[1];
+const verify = async ({ data, publicKey }) => {
+  let publicKeyWif;
+
+  // support publicKey validation as used with jsig
+  // https://github.com/json-ld/json-ld.org/pull/524/files#diff-6818b28212f86523d616ee70a27c0b44R868
+  if (publicKey) {
+    publicKeyWif = new bitcore.PublicKey(
+      publicKey.split("ecdsa-koblitz-pubkey:")[1]
+    ).toAddress(bitcore.Networks.livenet);
+  } else {
+    publicKeyWif = data.signature.creator.split("ecdsa-koblitz-pubkey:")[1];
+  }
+
   const signaturePayload = Object.assign({}, data);
   delete signaturePayload["signature"];
   const verifyData = await createVerifyData({
@@ -46,14 +57,13 @@ const verify = async ({ data }) => {
     forge.util.binary.raw.encode(Buffer.from(verifyData))
   );
   const verified = message.verify(publicKeyWif, data.signature.signatureValue);
-  return {
-    verified
-  };
+  return verified;
 };
 
 const sign = async ({
   data,
   privateKeyWIF,
+  privateKey,
   creator,
   nonce,
   domain,
@@ -69,18 +79,30 @@ const sign = async ({
   };
 
   const verifyData = await createVerifyData({
-    document: data,
+    document: { ...data },
     proof
   });
 
-  const privateKey = bitcore.PrivateKey.fromWIF(privateKeyWIF);
+  if (privateKey) {
+    bitcorePrivateKey = new bitcore.PrivateKey(privateKey);
+  } else {
+    bitcorePrivateKey = bitcore.PrivateKey.fromWIF(privateKeyWIF);
+  }
+
   const message = bitcoreMessage(
     forge.util.binary.raw.encode(Buffer.from(verifyData))
   );
-  proof.signatureValue = message.sign(privateKey);
-  data.signature = proof;
-  delete data.signature["@context"];
-  return data;
+  proof.signatureValue = message.sign(bitcorePrivateKey);
+  const signedData = { ...data };
+  signedData.signature = proof;
+  if (signedData.signature.nonce === undefined) {
+    delete signedData.signature["nonce"];
+  }
+  if (signedData.signature.domain === undefined) {
+    delete signedData.signature["domain"];
+  }
+  delete signedData.signature["@context"];
+  return signedData;
 };
 
 module.exports = {

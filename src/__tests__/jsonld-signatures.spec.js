@@ -29,7 +29,6 @@ describe("EcdsaKoblitzSignature2016", () => {
       documentLoader: testLoader,
       suite: new EcdsaKoblitzSignature2016({
         privateKeyWif: bitcoinKeypair.privateKey,
-        publicKeyWif: bitcoinKeypair.publicKey,
         creator: publicKeys.aliceBtc.id
       }),
       purpose: new PublicKeyProofPurpose()
