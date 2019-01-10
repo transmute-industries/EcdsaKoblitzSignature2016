@@ -40,9 +40,15 @@ const verify = async ({ data, publicKey }) => {
   // support publicKey validation as used with jsig
   // https://github.com/json-ld/json-ld.org/pull/524/files#diff-6818b28212f86523d616ee70a27c0b44R868
   if (publicKey) {
-    publicKeyWif = new bitcore.PublicKey(
-      publicKey.split("ecdsa-koblitz-pubkey:")[1]
-    ).toAddress(bitcore.Networks.livenet);
+    if (publicKey.indexOf("ecdsa-koblitz-pubkey:") == -1) {
+      publicKeyWif = new bitcore.PublicKey(publicKey).toAddress(
+        bitcore.Networks.livenet
+      );
+    } else {
+      publicKeyWif = new bitcore.PublicKey(
+        publicKey.split("ecdsa-koblitz-pubkey:")[1]
+      ).toAddress(bitcore.Networks.livenet);
+    }
   } else {
     publicKeyWif = data.signature.creator.split("ecdsa-koblitz-pubkey:")[1];
   }
@@ -78,6 +84,13 @@ const sign = async ({
     domain
   };
 
+  if (proof.nonce === undefined) {
+    delete proof["nonce"];
+  }
+  if (proof.domain === undefined) {
+    delete proof["domain"];
+  }
+
   const verifyData = await createVerifyData({
     document: { ...data },
     proof
@@ -95,12 +108,7 @@ const sign = async ({
   proof.signatureValue = message.sign(bitcorePrivateKey);
   const signedData = { ...data };
   signedData.signature = proof;
-  if (signedData.signature.nonce === undefined) {
-    delete signedData.signature["nonce"];
-  }
-  if (signedData.signature.domain === undefined) {
-    delete signedData.signature["domain"];
-  }
+
   delete signedData.signature["@context"];
   return signedData;
 };

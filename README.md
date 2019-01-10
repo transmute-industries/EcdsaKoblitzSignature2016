@@ -60,6 +60,19 @@ _IMO best not to use addresses for signature suites_
 }
 ```
 
+#### Alternative Implementations
+
+- https://github.com/jolocom/jolocom-lib
+- https://github.com/uport-project/did-jwt
+- https://github.com/transmute-industries/PROPOSAL-EcdsaKoblitzSignature2019
+
+Jolocom claims to be using `EcdsaKoblitzSignature2016`, but implements the signature algorithm differently then jsonld-signatures. This library does not work with Jolocom for this reason.
+
+UPort claims to be supporting `Secp256k1VerificationKey2018`, `Secp256k1SignatureVerificationKey2018`, `EcdsaPublicKeySecp256k1`, these are not compatible with `EcdsaKoblitzSignature2016` or Jolocom's version, but are closer, because both UPort and Jolocom are simply signing a digest.
+
+`PROPOSAL-EcdsaKoblitzSignature2019` is just a proposal, but its based off of `RsaSignature2017`. This library does not work with `PROPOSAL-EcdsaKoblitzSignature2019`.
+
+
 
 ## License Notes
 

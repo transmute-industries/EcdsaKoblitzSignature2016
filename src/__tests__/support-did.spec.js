@@ -17,4 +17,18 @@ describe("EcdsaKoblitzSignature2016", () => {
     });
     expect(verified).toBe(true);
   });
+
+  it("supports custom creator (reference to a did public key)", async () => {
+    const signed = await sign({
+      data: linkedData,
+      creator: `did:example:123#main-key`,
+      privateKey: btcIdentity.privateKeyHex
+    });
+    expect(signed.signature).toBeDefined();
+    const verified = await verify({
+      data: signed,
+      publicKey: btcIdentity.publicKey
+    });
+    expect(verified).toBe(true);
+  });
 });
