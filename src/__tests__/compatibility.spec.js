@@ -8,7 +8,12 @@ const {
   bitcoinKeypair,
   testLoader,
   publicKeys,
-  controller
+  controller,
+  didDocument,
+  didDocumentWithSignature,
+  didDocumentWithSignature2,
+  didDocumentWithProof,
+  btcIdentity
 } = require("./__fixtures__");
 
 const { sign, verify } = require("../index");
@@ -36,6 +41,137 @@ describe("EcdsaKoblitzSignature2016", () => {
       documentLoader: testLoader,
       suite: new EcdsaKoblitzSignature2016({
         creator: publicKeys.aliceBtc.id,
+        date: "2017-03-25T22:01:04Z"
+      }),
+      purpose: new PublicKeyProofPurpose({
+        controller
+      })
+    });
+    expect(result.verified).toBe(true);
+  });
+
+  it("can verify a didDocument signed with jsonld-signatures by creator address", async () => {
+    const verified = await verify({
+      data: { ...didDocumentWithSignature }
+    });
+    expect(verified).toBe(true);
+  });
+
+  it("can verify a didDocument signed with jsonld-signatures by creator public key", async () => {
+    const verified = await verify({
+      data: { ...didDocumentWithSignature2 }
+    });
+    expect(verified).toBe(true);
+  });
+
+  it("can verify a didDocument signed with jsonld-signatures by publicKey", async () => {
+    const verified = await verify({
+      data: { ...didDocumentWithSignature2 },
+      publicKey: btcIdentity.publicKey
+    });
+    expect(verified).toBe(true);
+  });
+
+  it("can not use jsonld-signatures to verify a didDocument with proof", async () => {
+    expect.assertions(1);
+    const result = await jsigs.verify(didDocumentWithProof, {
+      documentLoader: testLoader,
+      suite: new EcdsaKoblitzSignature2016({
+        creator: publicKeys.aliceBtc.id,
+        date: "2017-03-25T22:01:04Z"
+      }),
+      purpose: new PublicKeyProofPurpose({
+        controller
+      })
+    });
+    expect(result.verified).toBe(false);
+  });
+
+  it("can use jsonld-signatures to verify a didDocument with signature old", async () => {
+    expect.assertions(1);
+    const signed = await sign({
+      data: didDocument,
+      creator: `ecdsa-koblitz-pubkey:${bitcoinKeypair.address}`,
+      privateKeyWIF: bitcoinKeypair.privateKey
+    });
+
+    const result = await jsigs.verify(signed, {
+      documentLoader: testLoader,
+      suite: new EcdsaKoblitzSignature2016({
+        creator: publicKeys.aliceBtc.id,
+        date: "2017-03-25T22:01:04Z"
+      }),
+      purpose: new PublicKeyProofPurpose({
+        controller
+      })
+    });
+    expect(result.verified).toBe(true);
+  });
+
+  it("can use jsonld-signatures to verify a didDocument with signature new", async () => {
+    expect.assertions(1);
+    const signed = await sign({
+      data: didDocument,
+      creator: `ecdsa-koblitz-pubkey:${btcIdentity.address}`,
+      privateKeyWIF: btcIdentity.privateKeyWif
+    });
+
+    const result = await jsigs.verify(signed, {
+      documentLoader: testLoader,
+      suite: new EcdsaKoblitzSignature2016({
+        creator: `ecdsa-koblitz-pubkey:${btcIdentity.address}`,
+        date: "2017-03-25T22:01:04Z"
+      }),
+      purpose: new PublicKeyProofPurpose({
+        controller
+      })
+    });
+    expect(result.verified).toBe(true);
+  });
+
+  it("can use jsonld-signatures to verify a didDocument with proof after transformation", async () => {
+    expect.assertions(1);
+    const signed = await sign({
+      data: didDocument,
+      creator: `ecdsa-koblitz-pubkey:${btcIdentity.address}`,
+      signatureAttribute: "proof",
+      privateKey: btcIdentity.privateKeyHex
+    });
+    const transformed = {
+      ...signed,
+      signature: signed.proof
+    };
+    delete transformed["proof"];
+    const result = await jsigs.verify(transformed, {
+      documentLoader: testLoader,
+      suite: new EcdsaKoblitzSignature2016({
+        creator: `ecdsa-koblitz-pubkey:${btcIdentity.address}`,
+        date: "2017-03-25T22:01:04Z"
+      }),
+      purpose: new PublicKeyProofPurpose({
+        controller
+      })
+    });
+    expect(result.verified).toBe(true);
+  });
+
+  it("can use jsonld-signatures to verify a didDocument with proof after transformation with didCreator", async () => {
+    expect.assertions(1);
+    const signed = await sign({
+      data: didDocument,
+      creator: didDocument.publicKey[0].id,
+      signatureAttribute: "proof",
+      privateKey: btcIdentity.privateKeyHex
+    });
+    const transformed = {
+      ...signed,
+      signature: signed.proof
+    };
+    delete transformed["proof"];
+    const result = await jsigs.verify(transformed, {
+      documentLoader: testLoader,
+      suite: new EcdsaKoblitzSignature2016({
+        creator: `ecdsa-koblitz-pubkey:${btcIdentity.address}`,
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({

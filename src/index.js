@@ -41,6 +41,8 @@ const verify = async ({ data, publicKey, signatureAttribute }) => {
     signatureAttribute = "signature";
   }
 
+  // console.log(data);
+
   // support publicKey validation as used with jsig
   // https://github.com/json-ld/json-ld.org/pull/524/files#diff-6818b28212f86523d616ee70a27c0b44R868
   if (publicKey) {
@@ -57,10 +59,16 @@ const verify = async ({ data, publicKey, signatureAttribute }) => {
     publicKeyWif = data[signatureAttribute].creator.split(
       "ecdsa-koblitz-pubkey:"
     )[1];
+
+    if (publicKeyWif.length === 66) {
+      publicKeyWif = new bitcore.PublicKey(publicKeyWif).toAddress(
+        bitcore.Networks.livenet
+      );
+    }
   }
 
   const signaturePayload = Object.assign({}, data);
-  delete signaturePayload["signature"];
+  delete signaturePayload[signatureAttribute];
   const verifyData = await createVerifyData({
     document: signaturePayload,
     proof: data[signatureAttribute]
