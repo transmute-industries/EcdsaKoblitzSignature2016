@@ -34,8 +34,12 @@ const createVerifyData = async ({ document, proof }) => {
   return forge.util.binary.raw.decode(buffer.getBytes());
 };
 
-const verify = async ({ data, publicKey }) => {
+const verify = async ({ data, publicKey, signatureAttribute }) => {
   let publicKeyWif;
+
+  if (!signatureAttribute) {
+    signatureAttribute = "signature";
+  }
 
   // support publicKey validation as used with jsig
   // https://github.com/json-ld/json-ld.org/pull/524/files#diff-6818b28212f86523d616ee70a27c0b44R868
@@ -50,19 +54,24 @@ const verify = async ({ data, publicKey }) => {
       ).toAddress(bitcore.Networks.livenet);
     }
   } else {
-    publicKeyWif = data.signature.creator.split("ecdsa-koblitz-pubkey:")[1];
+    publicKeyWif = data[signatureAttribute].creator.split(
+      "ecdsa-koblitz-pubkey:"
+    )[1];
   }
 
   const signaturePayload = Object.assign({}, data);
   delete signaturePayload["signature"];
   const verifyData = await createVerifyData({
     document: signaturePayload,
-    proof: data.signature
+    proof: data[signatureAttribute]
   });
   const message = bitcoreMessage(
     forge.util.binary.raw.encode(Buffer.from(verifyData))
   );
-  const verified = message.verify(publicKeyWif, data.signature.signatureValue);
+  const verified = message.verify(
+    publicKeyWif,
+    data[signatureAttribute].signatureValue
+  );
   return verified;
 };
 
@@ -70,6 +79,7 @@ const sign = async ({
   data,
   privateKeyWIF,
   privateKey,
+  signatureAttribute,
   creator,
   nonce,
   domain,
@@ -83,6 +93,10 @@ const sign = async ({
     nonce,
     domain
   };
+
+  if (!signatureAttribute) {
+    signatureAttribute = "signature";
+  }
 
   if (proof.nonce === undefined) {
     delete proof["nonce"];
@@ -107,9 +121,9 @@ const sign = async ({
   );
   proof.signatureValue = message.sign(bitcorePrivateKey);
   const signedData = { ...data };
-  signedData.signature = proof;
+  signedData[signatureAttribute] = proof;
 
-  delete signedData.signature["@context"];
+  delete signedData[signatureAttribute]["@context"];
   return signedData;
 };
 
