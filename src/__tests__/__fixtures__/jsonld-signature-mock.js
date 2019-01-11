@@ -1,5 +1,6 @@
 const jsigs = require("jsonld-signatures");
-const identityv1 = require("./identity-v1.json");
+const identityv1 = require('./contexts/identity-v1.json');
+const didv1 = require('./contexts/did-v1.json');
 
 const publicKeys = {};
 
@@ -143,6 +144,16 @@ const testLoader = url => {
       documentUrl: url
     };
   }
+
+  if (url === "https://w3id.org/did/v1") {
+    return {
+      contextUrl: null,
+      document: didv1,
+      documentUrl: url
+    };
+  }
+
+  
 };
 
 module.exports = {

@@ -9,7 +9,6 @@ const {
   testLoader,
   didDocument,
   btcIdentity
-
 } = require("./__fixtures__");
 
 const { EcdsaKoblitzSignature2016 } = jsigs.suites;
@@ -51,15 +50,18 @@ describe("EcdsaKoblitzSignature2016", () => {
   });
 
   it("can sign and verify didDocument with jsonld-signatures", async () => {
-    const signed = await jsigs.sign({...didDocument}, {
-      documentLoader: testLoader,
-      suite: new EcdsaKoblitzSignature2016({
-        privateKeyWif: bitcoinKeypair.privateKey,
-        creator: publicKeys.aliceBtc.id
-      }),
-      purpose: new PublicKeyProofPurpose()
-    });
-    // console.log(JSON.stringify(signed, null, 2));
+    const signed = await jsigs.sign(
+      { ...didDocument },
+      {
+        documentLoader: testLoader,
+        suite: new EcdsaKoblitzSignature2016({
+          privateKeyWif: bitcoinKeypair.privateKey,
+          creator: publicKeys.aliceBtc.id
+        }),
+        purpose: new PublicKeyProofPurpose()
+      }
+    );
+
     const result = await jsigs.verify(signed, {
       documentLoader: testLoader,
       suite: new EcdsaKoblitzSignature2016({
@@ -73,16 +75,19 @@ describe("EcdsaKoblitzSignature2016", () => {
     expect(result.verified).toBe(true);
   });
 
-
   it("can sign and verify didDocument with jsonld-signatures using public key", async () => {
-    const signed = await jsigs.sign({...didDocument}, {
-      documentLoader: testLoader,
-      suite: new EcdsaKoblitzSignature2016({
-        privateKeyWif: btcIdentity.privateKeyWif,
-        creator: `ecdsa-koblitz-pubkey:${btcIdentity.publicKey}`
-      }),
-      purpose: new PublicKeyProofPurpose()
-    });
+    const signed = await jsigs.sign(
+      { ...didDocument },
+      {
+        documentLoader: testLoader,
+        suite: new EcdsaKoblitzSignature2016({
+          privateKeyWif: btcIdentity.privateKeyWif,
+          creator: `ecdsa-koblitz-pubkey:${btcIdentity.publicKey}`
+        }),
+        purpose: new PublicKeyProofPurpose()
+      }
+    );
+
     const result = await jsigs.verify(signed, {
       documentLoader: testLoader,
       suite: new EcdsaKoblitzSignature2016({
@@ -95,6 +100,4 @@ describe("EcdsaKoblitzSignature2016", () => {
     });
     expect(result.verified).toBe(true);
   });
-
-  
 });
