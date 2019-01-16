@@ -5,7 +5,7 @@ const {
   linkedData,
   bitcoinKeypair,
   publicKeys,
-  controller,
+  controllers,
   testLoader,
   didDocument,
   btcIdentity
@@ -18,12 +18,10 @@ const { PublicKeyProofPurpose } = jsigs.purposes;
 describe("EcdsaKoblitzSignature2016", () => {
   it("can expand and compact contexts", async () => {
     const expanded = await jsonld.expand(linkedData);
-    // console.log(expanded);
     const compacted = await jsonld.compact(
       expanded,
       "https://w3id.org/identity/v1"
     );
-    // console.log(compacted);
     expect(compacted).toEqual(linkedData);
   });
   it("can sign and verify with jsonld-signatures", async () => {
@@ -43,7 +41,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);
@@ -69,7 +67,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);
@@ -95,7 +93,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);

@@ -1,8 +1,5 @@
 const linkedData = require("./LinkedDataExample.json");
 const signedLinkedData1 = require("./SignedLinkedDataExample1.json");
-const identityv1 = require("./contexts/identity-v1.json");
-const didv1 = require("./contexts/did-v1.json");
-
 const didDocument = require("./didDocument.json");
 const didDocumentWithSignature = require("./didDocumentWithSignature.json");
 const didDocumentWithSignature2 = require("./didDocumentWithSignature2.json");
@@ -30,12 +27,10 @@ const btcIdentity = {
     "617e062ea82d0cc631bc6b315b444f2efb55319ea8e0b64f6f8a807ef7588e41"
 };
 
-const jsonldmocks = require("./jsonld-signature-mock");
+const jsonldSignaturesMocks = require("./jsonld-signatures");
 
 module.exports = {
   bitcoinKeypair,
-  identityv1,
-  didv1,
   linkedData,
   signedLinkedData1,
   keypair,
@@ -45,5 +40,5 @@ module.exports = {
   didDocumentWithSignature,
   didDocumentWithSignature2,
   didDocumentWithProof,
-  ...jsonldmocks
+  ...jsonldSignaturesMocks
 };

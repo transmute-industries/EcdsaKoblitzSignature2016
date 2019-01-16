@@ -8,7 +8,7 @@ const {
   bitcoinKeypair,
   testLoader,
   publicKeys,
-  controller,
+  controllers,
   didDocument,
   didDocumentWithSignature,
   didDocumentWithSignature2,
@@ -44,7 +44,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);
@@ -81,7 +81,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(false);
@@ -102,7 +102,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);
@@ -123,7 +123,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);
@@ -149,7 +149,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);
@@ -175,7 +175,7 @@ describe("EcdsaKoblitzSignature2016", () => {
         date: "2017-03-25T22:01:04Z"
       }),
       purpose: new PublicKeyProofPurpose({
-        controller
+        controller: controllers.alice
       })
     });
     expect(result.verified).toBe(true);
