@@ -6,9 +6,52 @@ const bitcoreMessage = require("bitcore-message");
 
 const { sign, verify } = require("../index");
 
-const { linkedData } = require("./__fixtures__");
+const { ethereumKeypair, linkedData } = require("./__fixtures__");
 
-describe("EcdsaKoblitzSignature2016", () => {
+describe.only("EcdsaKoblitzSignature2016", () => {
+  it("supports native ethereum keys", async () => {
+    // const { publicKey, privateKey } = ethereumKeypair;
+
+    // const signed = await sign({
+    //   data: linkedData,
+    //   creator: `ecdsa-koblitz-pubkey:${publicKey}`,
+    //   privateKey,
+    // });
+    // expect(signed.signature).toBeDefined();
+    // const verified = await verify({ data: signed });
+    // expect(verified).toBe(true);
+  });
+
+  it("supports converting Ethereum keys into Bitcoin keys", async () => {
+    const { publicKey, privateKey } = ethereumKeypair;
+    // Both a Bitcoin and an Ethereum public key are a point of the SECP256K1 curve
+    // However the format this point will be represented in is a bit different:
+    // Let P(x, y) be a point on the curve, and x, y 32 bytes hex encoded strings
+    // The corresponding Ethereum public key is the concatenation of x and y (64 bytes)
+    // The corresponding Bitcoin public key is the concatenation of a 1 byte prefix and x (35 bytes)
+    // where the prefix is 0x02 if y is even, or 0x03 is y is odd (we need this information
+    // because there will always be 2 points on the curve with the same x coordinate)
+    // Therefore we can convert an Ethereum public key to a Bitcoin private key the following way:
+    const bufferPublicKey = Buffer.from(publicKey, 'hex');
+    const x = bufferPublicKey.slice(0, 32);
+    const y = bufferPublicKey.slice(32, 64);
+    const isYEven = y[31] % 2 === 0;
+    const prefix = isYEven ? '02' : '03';
+    const btcPublicKey = `${prefix}${x.toString('hex')}`;
+    // Make sure that the btcPublicKey we computed is the same one returned by the bitcore-lib:
+    const btcPrivateKey = new bitcore.PrivateKey(privateKey);
+    expect(btcPublicKey).toBe(btcPrivateKey.toPublicKey().toString());
+
+    const signed = await sign({
+      data: linkedData,
+      creator: `ecdsa-koblitz-pubkey:${btcPublicKey}`,
+      privateKey,
+    });
+    expect(signed.signature).toBeDefined();
+    const verified = await verify({ data: signed });
+    expect(verified).toBe(true);
+  })
+
   it("supports bip39 / bitcoin / ethereum", async () => {
     // const  mnemonic = bip39.generateMnemonic();
     const mnemonic =
