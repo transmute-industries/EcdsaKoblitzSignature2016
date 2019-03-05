@@ -60,6 +60,15 @@ const verify = async ({ data, publicKey, signatureAttribute }) => {
       "ecdsa-koblitz-pubkey:"
     )[1];
 
+    // If Ethereum public key, convert into Bitcoin public key
+    if (publicKeyWif.length === 128) {
+      const bufferPublicKey = Buffer.from(publicKeyWif, 'hex');
+      const x = bufferPublicKey.slice(0, 32);
+      const y = bufferPublicKey.slice(32, 64);
+      const isYEven = y[31] % 2 === 0;
+      const prefix = isYEven ? '02' : '03';
+      publicKeyWif = `${prefix}${x.toString('hex')}`;
+    }
     if (publicKeyWif.length === 66) {
       publicKeyWif = new bitcore.PublicKey(publicKeyWif).toAddress(
         bitcore.Networks.livenet

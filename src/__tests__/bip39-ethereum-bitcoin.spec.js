@@ -8,18 +8,18 @@ const { sign, verify } = require("../index");
 
 const { ethereumKeypair, linkedData } = require("./__fixtures__");
 
-describe.only("EcdsaKoblitzSignature2016", () => {
+describe("EcdsaKoblitzSignature2016", () => {
   it("supports native ethereum keys", async () => {
-    // const { publicKey, privateKey } = ethereumKeypair;
+    const { publicKey, privateKey } = ethereumKeypair;
 
-    // const signed = await sign({
-    //   data: linkedData,
-    //   creator: `ecdsa-koblitz-pubkey:${publicKey}`,
-    //   privateKey,
-    // });
-    // expect(signed.signature).toBeDefined();
-    // const verified = await verify({ data: signed });
-    // expect(verified).toBe(true);
+    const signed = await sign({
+      data: linkedData,
+      creator: `ecdsa-koblitz-pubkey:${publicKey}`,
+      privateKey,
+    });
+    expect(signed.signature).toBeDefined();
+    const verified = await verify({ data: signed });
+    expect(verified).toBe(true);
   });
 
   it("supports converting Ethereum keys into Bitcoin keys", async () => {
