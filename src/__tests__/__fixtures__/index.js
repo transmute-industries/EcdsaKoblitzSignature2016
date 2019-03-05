@@ -5,6 +5,11 @@ const didDocumentWithSignature = require("./didDocumentWithSignature.json");
 const didDocumentWithSignature2 = require("./didDocumentWithSignature2.json");
 const didDocumentWithProof = require("./didDocumentWithProof.json");
 
+const ethereumKeypair = {
+  publicKey: '234be9bcdf041f7530979b8b88b7dc62dd505a75883c8211f3a8250534f96dc0c09bb3e90bae8a2b8a5d4136d54818f892c40176f82994520298e41777d97e0e',
+  privateKey: '617e062ea82d0cc631bc6b315b444f2efb55319ea8e0b64f6f8a807ef7588e41',
+};
+
 const keypair = {
   publicKey:
     "045b767b4fcf8664e3e4c32dd41d5b4c3b88680c10946e063e4100d3c7484a563b99576ba1de98cb77366ecafd47730ed5830a6c3e7faed48010b49532d0b01585",
@@ -34,6 +39,7 @@ module.exports = {
   linkedData,
   signedLinkedData1,
   keypair,
+  ethereumKeypair,
   creator,
   btcIdentity,
   didDocument,
