@@ -37,6 +37,8 @@ const createVerifyData = async ({ document, proof }) => {
 const verify = async ({ data, publicKey, signatureAttribute }) => {
   let publicKeyWif;
 
+  let _data = {...data};
+
   if (!signatureAttribute) {
     signatureAttribute = "signature";
   }
@@ -56,7 +58,7 @@ const verify = async ({ data, publicKey, signatureAttribute }) => {
       ).toAddress(bitcore.Networks.livenet);
     }
   } else {
-    publicKeyWif = data[signatureAttribute].creator.split(
+    publicKeyWif = _data[signatureAttribute].creator.split(
       "ecdsa-koblitz-pubkey:"
     )[1];
 
@@ -69,6 +71,7 @@ const verify = async ({ data, publicKey, signatureAttribute }) => {
       const prefix = isYEven ? '02' : '03';
       publicKeyWif = `${prefix}${x.toString('hex')}`;
     }
+
     if (publicKeyWif.length === 66) {
       publicKeyWif = new bitcore.PublicKey(publicKeyWif).toAddress(
         bitcore.Networks.livenet
@@ -76,18 +79,18 @@ const verify = async ({ data, publicKey, signatureAttribute }) => {
     }
   }
 
-  const signaturePayload = Object.assign({}, data);
+  const signaturePayload = Object.assign({}, _data);
   delete signaturePayload[signatureAttribute];
   const verifyData = await createVerifyData({
     document: signaturePayload,
-    proof: data[signatureAttribute]
+    proof: _data[signatureAttribute]
   });
   const message = bitcoreMessage(
     forge.util.binary.raw.encode(Buffer.from(verifyData))
   );
   const verified = message.verify(
     publicKeyWif,
-    data[signatureAttribute].signatureValue
+    _data[signatureAttribute].signatureValue
   );
   return verified;
 };
@@ -102,6 +105,9 @@ const sign = async ({
   domain,
   created
 }) => {
+
+  let _data = {...data};
+
   const proof = {
     "@context": "https://w3id.org/security/v2",
     type: "EcdsaKoblitzSignature2016",
@@ -123,7 +129,7 @@ const sign = async ({
   }
 
   const verifyData = await createVerifyData({
-    document: { ...data },
+    document: { ..._data },
     proof
   });
 
@@ -137,7 +143,7 @@ const sign = async ({
     forge.util.binary.raw.encode(Buffer.from(verifyData))
   );
   proof.signatureValue = message.sign(bitcorePrivateKey);
-  const signedData = { ...data };
+  const signedData = { ..._data };
   signedData[signatureAttribute] = proof;
 
   delete signedData[signatureAttribute]["@context"];
