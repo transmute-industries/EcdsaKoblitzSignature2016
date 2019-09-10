@@ -6,7 +6,8 @@ const forge = require("node-forge");
 const canonize = async data => {
   return jsonld.canonize(data, {
     algorithm: "URDNA2015",
-    format: "application/n-quads"
+    format: "application/n-quads",
+    skipExpansion: true,
   });
 };
 
